@@ -61,17 +61,23 @@ for resultId, tags in groupedResults.items():
 
 X = []
 Y = []
-for key, distroTagsResults in distroTagsResults.items():
+for key, distroTagsResult in distroTagsResults.items():
   distroName = key.split("#")[1]
   Y.append(distroName)
-  X.append(distroTagsResults)
+  X.append(distroTagsResult)
 
-
-clf = tree.DecisionTreeClassifier()
+clf = tree.DecisionTreeClassifier(max_depth=3)
 clf = clf.fit(X, Y)
 
-userInput = [[1, 0, 1, 0, 1, 1, 0, 1, 0, 0, 0, 2, 1, 1, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 1, 0, 0, 1, 1, 1, 0, 0, 1, 1, 0, 0, 0, 1, 1, 0]]
 
-print(userInput, clf.predict(userInput), clf.predict_proba(userInput))
+userInputHumanReadable = OrderedDict([('all-like', 0), ('container', 0), ('fromsource', 0), ('help-community', 1), ('help-wiki', 1), ('installation-base', 0), ('installation-full', 2), ('installation-hdd', 1), ('installation-live', 0), ('installation-usb', -1), ('installer-defaults-wanted', 2), ('installer-no-defaults-wanted', 0), ('license-free', 0), ('license-unfree-if-needed', 1), ('linux-advanced', 0), ('linux-beginner', 2), ('linux-expert', 0), ('mac-like', 0), ('multipackage', 0), ('no-systemd', 0), ('pay-nothing', 2), ('pay-price', 0), ('pc-advanced', 0), ('pc-beginner', 0), ('pc-expert', 3), ('pc-old', 0), ('pc-up-to-date', 2), ('privacy-online-not-okay', 0), ('privacy-online-okay', 1), ('programs-graphical', 4), ('programs-shell', 0), ('systemd', 2), ('updates-stable', 2), ('updates-unstable', 0), ('usage-anon', 0), ('usage-daily', 1), ('usage-gaming', 1), ('usage-rescue', -1), ('usage-science', 0), ('usage-usb', -1), ('ux-closed', 2), ('ux-undecided', 0), ('windows-like', 0)])
+
+userInput = [[]]
+for tag, score in userInputHumanReadable.items():
+  userInput[0].append(score)
+
+print(userInput)
+
+print(clf.predict(userInput), clf.predict_proba(userInput))
 for target in set(Y):
   print(target, "->" , clf.score(userInput, [target]))
